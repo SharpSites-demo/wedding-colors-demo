@@ -1,0 +1,5 @@
+Canvas UI — Liquid (vanilla WebGL build)
+Source: https://github.com/DavidHDev/canvas-ui (canvasui.dev)
+Files: components/canvasui/LiquidVanilla.js (compiled from src/lib/Liquid/LiquidVanilla.ts),
+       lib/rect-cache.js (compiled from src/lib/rect-cache.ts)
+MIT License — Copyright (c) 2025 David Hdev
