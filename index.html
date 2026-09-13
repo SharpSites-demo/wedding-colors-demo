@@ -473,26 +473,29 @@ window.addEventListener('DOMContentLoaded', function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var reveals = document.querySelectorAll('.reveal');
 
-  /* motion: hero line rise + scroll reveals (GSAP when available, IO fallback) */
+  /* motion: content is visible by default; reveals are progressive enhancement.
+     GSAP powers the hero line rise + hero parallax; IO powers scroll reveals. */
   if (reduced) {
     reveals.forEach(function (el) { el.classList.add('in'); });
-  } else if (window.gsap && window.ScrollTrigger) {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.from('.hero-line', { yPercent: 115, duration: 1, ease: 'power3.out', stagger: 0.12, delay: 0.1 });
-    gsap.set('.reveal', { opacity: 0, y: 24 });
-    ScrollTrigger.batch('.reveal', {
-      start: 'top 88%', once: true,
-      onEnter: function (b) { gsap.to(b, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.08 }); }
-    });
-  } else if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(function (el) { io.observe(el); });
   } else {
-    reveals.forEach(function (el) { el.classList.add('in'); });
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero-line', { yPercent: 115, duration: 1, ease: 'power3.out', stagger: 0.12, delay: 0.1 });
+      gsap.to('.gate-svg', {
+        yPercent: -8, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      reveals.forEach(function (el) { io.observe(el); });
+    } else {
+      reveals.forEach(function (el) { el.classList.add('in'); });
+    }
   }
 
   /* filmstrip: native touch scroll-snap + mouse drag + buttons + keyboard */
