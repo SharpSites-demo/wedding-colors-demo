@@ -493,6 +493,8 @@ window.addEventListener('DOMContentLoaded', function () {
         });
       }, { threshold: 0.12 });
       reveals.forEach(function (el) { io.observe(el); });
+      /* failsafe: nothing stays hidden, whatever the scroll pattern */
+      setTimeout(function () { reveals.forEach(function (el) { el.classList.add('in'); }); }, 3000);
     } else {
       reveals.forEach(function (el) { el.classList.add('in'); });
     }
